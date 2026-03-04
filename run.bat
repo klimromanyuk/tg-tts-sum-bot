@@ -1,5 +1,5 @@
 @echo off
-cd /d D:\projects\tg-voice-bot
+cd /d "%~dp0"
 call venv\Scripts\activate
 python bot.py
 pause
