@@ -1,0 +1,26 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Secrets & personal data
+.env
+users.json
+
+# Logs
+logs/
+*.log
+
+# Voices (user-generated, binary)
+voices/
+
+# Test outputs
+test_output.*
+
+# IDE
+.vscode/
+.idea/
+
+# Audacity projects
+*.aup3

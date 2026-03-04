@@ -1,0 +1,14 @@
+{
+  "context_tokens": 16384,
+  "temperature": 0.8,
+  "max_tokens": 2048,
+  "tts_max_tokens": 1024,
+  "tts_language": null,
+  "response_reserve": 1024,
+  "thinking_sum": false,
+  "thinking_resp": false,
+  "ollama_model": "huihui_ai/qwen3-abliterated:14b-v2-q4_K_M",
+  "allowed_dm_users": [
+    
+  ]
+}
