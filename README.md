@@ -1,10 +1,12 @@
-# 🤖 TG Voice Bot
+# 🤖 TG TTS Summary Bot
+
+![header](docs/header.webp)
 
 Telegram bot powered by local LLM ([Ollama](https://ollama.ai)) with voice synthesis via [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS) and [Edge-TTS](https://github.com/rany2/edge-tts).
 
 All AI processing runs locally on your GPU. Edge-TTS uses Microsoft's cloud API as a lightweight alternative.
 
-> 💬 **Have questions about this project?** Ask [Qwen Chat](https://chat.qwen.ai/) — it understands code and can explain how things work.
+> 💬 **Have questions about this project?** Ask [Qwen Chat](https://chat.qwen.ai/) with link to repo — it understands code and can explain how things work.
 
 ---
 
@@ -21,9 +23,9 @@ All AI processing runs locally on your GPU. Edge-TTS uses Microsoft's cloud API 
 
 ## 📋 Requirements
 
-### Hardware
-- **GPU**: NVIDIA with 8GB+ VRAM (tested on RTX 3050 8GB)
-- **RAM**: 16GB+
+### My hardware
+- **GPU**: NVIDIA with 8GB VRAM
+- **RAM**: 16GB
 - **OS**: Windows 10/11
 
 ### Software
@@ -37,8 +39,8 @@ All AI processing runs locally on your GPU. Edge-TTS uses Microsoft's cloud API 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/[YOUR_USERNAME]/tg-voice-bot.git
-cd tg-voice-bot
+git clone https://github.com/klimromanyuk/tg-tts-sum-bot.git
+cd tg-tts-sum-bot
 ```
 
 ### 2. Create virtual environment
@@ -69,6 +71,7 @@ pip install -r requirements.txt
 > pip install python-telegram-bot aiohttp edge-tts soundfile numpy python-dotenv
 > pip install transformers accelerate safetensors librosa onnxruntime sox
 > ```
+> If pip asks for newer versions of the libraries, agree. This will not affect venv ComfyUI
 
 ### 4. Install Ollama
 
@@ -78,6 +81,7 @@ pip install -r requirements.txt
 ```bash
 ollama pull huihui_ai/qwen3-abliterated:14b-v2-q4_K_M
 ```
+> I used this model in tests
 
 ### 5. Install FFmpeg
 
@@ -89,6 +93,7 @@ ollama pull huihui_ai/qwen3-abliterated:14b-v2-q4_K_M
 1. Download from [SourceForge](https://sourceforge.net/projects/sox/files/sox/14.4.2/sox-14.4.2-win32.zip)
 2. Extract to a folder (e.g., `C:\programs\sox`)
 3. Add that folder to your system PATH
+> Have problems here? Ask [Qwen Chat](https://chat.qwen.ai/)
 
 ### 7. Configure
 
@@ -149,6 +154,7 @@ QWEN_VOICES = {
     "my_voice": {"name": "My Voice", "emoji": "🎤"},
 }
 ```
+> Tag used as ID in comands. `name` and `emoji` used in inline keyboard.
 
 5. Run the preparation script:
 ```bash
@@ -164,6 +170,9 @@ python -m tools.test_voices
 ```
 
 Interactive tool to test both Qwen and Edge-TTS voices.
+
+>💡 If you want to change existing voice, just delete the `.qvp` file. Don't forget to update `meta.json`. Then run `prepare_voices` again.
+>If you want to add a voice, create a new folder inside `voices/` and run `prepare_voices`. It will ignore existing voices with `.qvp` files inside folders.
 
 ## 📖 Commands
 
@@ -188,7 +197,7 @@ Interactive tool to test both Qwen and Edge-TTS voices.
 /sum like a fairy tale  ← with custom style
 /sum 50 like a poem     ← max 50 + style
 ```
-Reply to a message: summarizes FROM that message forward.
+>Reply to a message: summarizes FROM that message forward.
 
 ### DM-Only Commands
 | Command | Description |
@@ -210,7 +219,7 @@ Reply to a message: summarizes FROM that message forward.
 ### Available Settings (`/set`)
 | Key | Description | Default |
 |-----|-------------|---------|
-| `context` | Context window (tokens) | 8192 |
+| `context` | Context window (tokens) | 16384 |
 | `temperature` | LLM temperature | 0.8 |
 | `max_tokens` | Max response length | 2048 |
 | `tts_max_tokens` | Max TTS generation tokens | 1024 |
@@ -249,11 +258,12 @@ utils/              ← Utilities
 tools/              ← Standalone scripts
   prepare_voices.py ← Voice profile generator
   test_voices.py    ← Voice testing tool
+  __edge_tts_diag.py ← Test why Edge-TTS is not working. Send the output to Qwen
 ```
 
 ### GPU Management
 
-Only one model fits in 8GB VRAM at a time:
+Only one model fits in (my) 8GB VRAM at a time:
 
 ```
 Idle ──→ Ollama (LLM request) ──→ stays loaded
@@ -282,7 +292,7 @@ from texts_ru import *
 # from texts_en import *
 ```
 
-LLM prompts respond in the language of the user's message.
+LLM prompts respond in the language of the user's message. If the message is empty, LLM will respond in the localization language.
 
 ### BotFather Commands
 
@@ -340,9 +350,87 @@ allow - Добавить пользователя (владелец)
 
 </details>
 
+<details>
+<summary>中文 (Chinese Simplified)</summary>
+
+```
+joke - 讲个笑话
+ask - 向LLM提问
+sum - 总结聊天记录
+sumone - 总结单条消息（回复）
+tts - 文字转语音
+voice - 选择语音和引擎
+autovoice - 开关自动语音
+status - 机器人状态
+help - 帮助信息
+q - 单次提问（私聊）
+chat - 开关对话模式（私聊）
+newchat - 清除对话上下文（私聊）
+system - 设置系统提示词（私聊）
+model - 查看/切换模型（私聊）
+unload - 强制卸载GPU（管理员）
+settings - 显示设置（管理员）
+set - 修改设置（管理员）
+allow - 授权用户私聊（管理员）
+```
+
+</details>
+
+<details>
+<summary>Español (Spanish)</summary>
+
+```
+joke - Contar un chiste
+ask - Hacer una pregunta al LLM
+sum - Resumir mensajes del chat
+sumone - Resumir un mensaje (respuesta)
+tts - Texto a voz
+voice - Elegir voz y motor
+autovoice - Activar/desactivar voz automática
+status - Estado del bot
+help - Ayuda completa
+q - Pregunta única (MD)
+chat - Activar/desactivar modo diálogo (MD)
+newchat - Limpiar contexto del diálogo (MD)
+system - Establecer prompt del sistema (MD)
+model - Listar/cambiar modelos (MD)
+unload - Forzar descarga de GPU (propietario)
+settings - Mostrar configuración (propietario)
+set - Cambiar configuración (propietario)
+allow - Autorizar usuario en MD (propietario)
+```
+
+</details>
+
+<details>
+<summary>Deutsch (German)</summary>
+
+```
+joke - Einen Witz erzählen
+ask - Eine Frage an das LLM stellen
+sum - Chat-Nachrichten zusammenfassen
+sumone - Eine Nachricht zusammenfassen (Antwort)
+tts - Text-zu-Sprache
+voice - Stimme und Engine auswählen
+autovoice - Automatische Sprachausgabe ein/aus
+status - Bot-Status
+help - Vollständige Hilfe
+q - Einzelne Frage (DM)
+chat - Dialogmodus ein/aus (DM)
+newchat - Dialogkontext löschen (DM)
+system - System-Prompt festlegen (DM)
+model - Modelle auflisten/wechseln (DM)
+unload - GPU zwangsweise entladen (Besitzer)
+settings - Einstellungen anzeigen (Besitzer)
+set - Einstellung ändern (Besitzer)
+allow - Benutzer für DM freigeben (Besitzer)
+```
+
+</details>
+
 ## ⚠️ Known Issues
 
-- **Edge-TTS regional restrictions**: May not work in some countries. If you experience issues, please [open an issue](https://github.com/[YOUR_USERNAME]/tg-voice-bot/issues). Use Qwen-TTS as an alternative.
+- **Edge-TTS regional restrictions**: May not work in some countries. If you experience issues, please ask Qwen and send him output from `tools.__edge_tts_diag`. Use Qwen-TTS as an alternative.
 - **Qwen3-TTS infinite generation**: Known upstream bug. The bot uses timeouts and retries with reduced token limits as a workaround.
 - **Thinking models**: Some models write `<think>` tags in responses regardless of settings. The bot filters these out automatically. Use `/set show_thinking off` to hide the thinking display.
 
@@ -356,3 +444,5 @@ allow - Добавить пользователя (владелец)
 - [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS) — Voice cloning model by Alibaba
 - [Edge-TTS](https://github.com/rany2/edge-tts) — Microsoft Edge TTS API
 - [python-telegram-bot](https://python-telegram-bot.org/) — Telegram Bot API wrapper
+
+![footer](docs/footer.webp)
