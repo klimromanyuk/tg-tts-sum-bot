@@ -1,6 +1,8 @@
 # 🤖 TG TTS Summary Bot
 
-![header](docs/header.webp)
+<p align="center">
+  <img src="docs/header.webp">
+</p>
 
 Telegram bot powered by local LLM ([Ollama](https://ollama.ai)) with voice synthesis via [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS) and [Edge-TTS](https://github.com/rany2/edge-tts).
 
@@ -445,4 +447,6 @@ allow - Benutzer für DM freigeben (Besitzer)
 - [Edge-TTS](https://github.com/rany2/edge-tts) — Microsoft Edge TTS API
 - [python-telegram-bot](https://python-telegram-bot.org/) — Telegram Bot API wrapper
 
-![footer](docs/footer.webp)
+<p align="center">
+  <img src="docs/footer.webp">
+</p>
