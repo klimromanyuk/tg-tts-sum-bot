@@ -30,7 +30,7 @@ OLLAMA_URL = "http://localhost:11434"
 # --- User defaults ---
 DEFAULT_QWEN_VOICE = "warm_female"
 DEFAULT_EDGE_VOICE = "en-US-AndrewMultilingualNeural"
-DEFAULT_TTS_ENGINE = "edge"
+DEFAULT_TTS_ENGINE = "qwen"
 DEFAULT_AUTO_VOICE = False
 
 # --- Ollama models ---

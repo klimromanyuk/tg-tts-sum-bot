@@ -233,12 +233,17 @@ async def stream_llm_response(bot: Bot, chat_id: int, prompt: str, system: str =
 
     return answer_text.strip(), think_text.strip()
 
-
 async def _try_send_draft(bot: Bot, chat_id: int, text: str, reply_to: int = None) -> bool:
-    """Try sendMessageDraft. Returns True if API supports it."""
-    import aiohttp
+    """Try sendMessageDraft. Only works in private chats (chat_id > 0)."""
+    if chat_id < 0:
+        return False
     url = f"https://api.telegram.org/bot{bot.token}/sendMessageDraft"
-    payload = {"chat_id": chat_id, "text": text, "parse_mode": "HTML"}
+    payload = {
+        "chat_id": chat_id,
+        "text": text,
+        "parse_mode": "HTML",
+        "draft_id": 1,
+    }
     if reply_to:
         payload["reply_parameters"] = {"message_id": reply_to}
     try:
@@ -247,10 +252,6 @@ async def _try_send_draft(bot: Bot, chat_id: int, text: str, reply_to: int = Non
                 data = await resp.json()
                 if data.get("ok"):
                     return True
-                # Method not found = not supported
-                if resp.status == 404 or "not found" in str(data.get("description", "")).lower():
-                    log.info("sendMessageDraft not supported, using editMessage fallback")
-                    return False
                 return False
     except Exception:
         return False

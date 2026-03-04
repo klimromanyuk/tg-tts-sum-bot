@@ -7,6 +7,7 @@ import logging
 log = logging.getLogger(__name__)
 _model = None
 _executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="tts")
+_prompt_cache: dict[str, object] = {}
 
 def is_loaded() -> bool:
     return _model is not None
@@ -26,7 +27,7 @@ def unload_model():
     global _model
     if _model is None:
         return
-    log.info("Unloading TTS model...")
+    _prompt_cache.clear()
     del _model
     _model = None
     torch.cuda.empty_cache()
@@ -38,8 +39,6 @@ def _generate_one_chunk(text: str, prompt, max_tokens: int, language=None) -> tu
     kwargs = {"text": text, "voice_clone_prompt": prompt, "max_new_tokens": max_tokens}
     if language:
         kwargs["language"] = language
-    else:
-        kwargs["language"] = "English"
     wavs, sr = _model.generate_voice_clone(**kwargs)
     return wavs[0], sr
 
@@ -48,7 +47,11 @@ async def generate(text: str, prompt_path: str, max_tokens: int = 4096, language
     if not clean:
         raise ValueError("Empty text after cleaning")
 
-    prompt = torch.load(prompt_path, weights_only=False)
+    if prompt_path in _prompt_cache:
+        prompt = _prompt_cache[prompt_path]
+    else:
+        prompt = torch.load(prompt_path, weights_only=False)
+        _prompt_cache[prompt_path] = prompt
     chunks = chunk_text(clean, TTS_MAX_CHUNK_CHARS)
     log.info(f"TTS: {len(chunks)} chunks from {len(clean)} chars")
 
