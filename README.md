@@ -1,5 +1,9 @@
 # 🤖 TG TTS Summary Bot
 
+> ⚠️ **Attention:** The project is no longer supported (unmaintained). 
+> The code is working, but not optimized. The author does not plan to make changes or correct errors. 
+> Use it at your own risk or fork it for further development.
+
 <p align="center">
   <img src="docs/header.webp">
 </p>
